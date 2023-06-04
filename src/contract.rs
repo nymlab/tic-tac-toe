@@ -1,19 +1,12 @@
 use crate::error::ContractError;
 use crate::game::*;
-use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{
-    to_binary, Addr, CanonicalAddr, CosmosMsg, Deps, DepsMut, Empty, Env, MessageInfo, Response,
-    StdResult, SubMsg, WasmMsg,
-};
+use cosmwasm_std::{Deps, DepsMut, Env, MessageInfo, Response, StdResult};
 use cw2::set_contract_version;
 use cw_storage_plus::{Item, Map};
 use sylvia::contract;
 
 const CONTRACT_NAME: &str = env!("CARGO_PKG_NAME");
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
-
-const TASK: &str = "tasks";
-const MANAGER: &str = "manager";
 
 pub struct TicTacToe<'a> {
     pub games: Map<'a, &'a str, Game>,
@@ -43,7 +36,7 @@ impl TicTacToe<'_> {
         let game = Game::new();
         self.games.save(deps.storage, info.sender.as_str(), &game)?;
         self.total_games
-            .update(deps.storage, |mut total| -> Result<u64, ContractError> {
+            .update(deps.storage, |total| -> Result<u64, ContractError> {
                 Ok(total + 1)
             })?;
         Ok(Response::new())
@@ -55,7 +48,26 @@ impl TicTacToe<'_> {
         ctx: (DepsMut, Env, MessageInfo),
         point: Option<Point>,
     ) -> Result<Response, ContractError> {
-        let (deps, _, info) = ctx;
+        let (deps, env, info) = ctx;
         let mut game = self.games.load(deps.storage, info.sender.as_str())?;
+        if game.is_playable() {
+            game.play(point, env)?;
+            self.games.save(deps.storage, info.sender.as_str(), &game)?;
+            Ok(Response::new())
+        } else {
+            Err(ContractError::Completed)
+        }
+    }
+
+    #[msg(query)]
+    pub fn game_info(&self, ctx: (Deps, Env), owner: String) -> StdResult<Game> {
+        let (deps, _) = ctx;
+        self.games.load(deps.storage, &owner)
+    }
+
+    #[msg(query)]
+    pub fn total_games(&self, ctx: (Deps, Env)) -> StdResult<u64> {
+        let (deps, _) = ctx;
+        self.total_games.load(deps.storage)
     }
 }

@@ -13,6 +13,6 @@ pub enum ContractError {
     #[error("Position taken")]
     PositionTaken,
 
-    #[error("Board is Full")]
-    Full,
+    #[error("Game has been completed")]
+    Completed,
 }
