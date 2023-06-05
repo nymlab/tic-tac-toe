@@ -50,6 +50,14 @@ impl TicTacToe<'_> {
     ) -> Result<Response, ContractError> {
         let (deps, env, info) = ctx;
         let mut game = self.games.load(deps.storage, info.sender.as_str())?;
+
+        // Ideally this is a condition external to this but for now it is ok
+        //
+        // We are saying that human are the first to play (since they start the game)
+        // the bot will also send in None as position
+        if point.is_none() && game.next_player != 2 {
+            return Err(ContractError::NotAutoPlay);
+        }
         if game.is_playable() {
             game.play(point, env)?;
             self.games.save(deps.storage, info.sender.as_str(), &game)?;

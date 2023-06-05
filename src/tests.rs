@@ -1,15 +1,7 @@
-use crate::{
-    contract::{ExecMsg, InstantiateMsg, QueryMsg, TicTacToe},
-    error::ContractError,
-    game::*,
-};
-use cosmwasm_std::{
-    testing::{mock_dependencies, mock_env, mock_info},
-    DepsMut, Env, MessageInfo,
-};
+use crate::{contract::TicTacToe, error::ContractError, game::*};
+use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
 
 const PLAYER1: &str = "player1";
-const PLAYER2: &str = "player2";
 
 #[test]
 fn board_finds_x_wins() {
@@ -230,10 +222,10 @@ fn game_play_wins_returns_status() {
 }
 
 #[test]
-fn game_play_random_returns_status() {
+fn game_human_turn_cannot_be_played_by_auto() {
     let mut deps = mock_dependencies();
     let info = mock_info(PLAYER1, &[]);
-    let mut env = mock_env();
+    let env = mock_env();
 
     let ttt = TicTacToe::new();
     ttt.instantiate((deps.as_mut(), env.clone(), info.clone()))
@@ -241,18 +233,13 @@ fn game_play_random_returns_status() {
     ttt.new_game((deps.as_mut(), env.clone(), info.clone()))
         .unwrap();
 
-    let mut game = ttt
+    let game = ttt
         .game_info((deps.as_ref(), env.clone()), PLAYER1.to_string())
         .unwrap();
-    while game.status == GameStatus::InProgress {
-        env.block.time = env.block.time.plus_seconds(2);
-        ttt.play((deps.as_mut(), env.clone(), info.clone()), None)
-            .unwrap();
-        game = ttt
-            .game_info((deps.as_ref(), env.clone()), PLAYER1.to_string())
-            .unwrap();
-    }
-    assert_ne!(game.status, GameStatus::InProgress);
+    assert_eq!(game.next_player, 1);
+    let err = ttt.play((deps.as_mut(), env, info), None).unwrap_err();
+
+    assert_eq!(err, ContractError::NotAutoPlay)
 }
 
 #[test]

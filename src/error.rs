@@ -15,4 +15,7 @@ pub enum ContractError {
 
     #[error("Game has been completed")]
     Completed,
+
+    #[error("Not autoplay turn")]
+    NotAutoPlay,
 }
