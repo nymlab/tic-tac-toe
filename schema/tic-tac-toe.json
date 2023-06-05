@@ -1,0 +1,231 @@
+{
+  "contract_name": "tic-tac-toe",
+  "contract_version": "0.1.0",
+  "idl_version": "1.0.0",
+  "instantiate": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "InstantiateMsg",
+    "type": "object"
+  },
+  "execute": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ExecuteMsg",
+    "anyOf": [
+      {
+        "$ref": "#/definitions/ExecMsg"
+      }
+    ],
+    "definitions": {
+      "ExecMsg": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "new_game"
+            ],
+            "properties": {
+              "new_game": {
+                "type": "object"
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": [
+              "play"
+            ],
+            "properties": {
+              "play": {
+                "type": "object",
+                "properties": {
+                  "point": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/Point"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "Point": {
+        "type": "object",
+        "required": [
+          "x",
+          "y"
+        ],
+        "properties": {
+          "x": {
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 0.0
+          },
+          "y": {
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 0.0
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "query": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "QueryMsg",
+    "anyOf": [
+      {
+        "$ref": "#/definitions/QueryMsg"
+      }
+    ],
+    "definitions": {
+      "QueryMsg": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "game_info"
+            ],
+            "properties": {
+              "game_info": {
+                "type": "object",
+                "required": [
+                  "owner"
+                ],
+                "properties": {
+                  "owner": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": [
+              "total_games"
+            ],
+            "properties": {
+              "total_games": {
+                "type": "object"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "migrate": null,
+  "sudo": null,
+  "responses": {
+    "game_info": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Game",
+      "type": "object",
+      "required": [
+        "board",
+        "last_position",
+        "next_player",
+        "status",
+        "total_moves"
+      ],
+      "properties": {
+        "board": {
+          "$ref": "#/definitions/Board"
+        },
+        "last_position": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 0.0
+          },
+          "maxItems": 2,
+          "minItems": 2
+        },
+        "next_player": {
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
+        },
+        "status": {
+          "$ref": "#/definitions/GameStatus"
+        },
+        "total_moves": {
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
+        }
+      },
+      "additionalProperties": false,
+      "definitions": {
+        "Board": {
+          "type": "object",
+          "required": [
+            "positions"
+          ],
+          "properties": {
+            "positions": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "uint8",
+                  "minimum": 0.0
+                },
+                "maxItems": 3,
+                "minItems": 3
+              },
+              "maxItems": 3,
+              "minItems": 3
+            }
+          },
+          "additionalProperties": false
+        },
+        "GameStatus": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "in_progress",
+                "draw"
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "won"
+              ],
+              "properties": {
+                "won": {
+                  "type": "integer",
+                  "format": "uint8",
+                  "minimum": 0.0
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      }
+    },
+    "total_games": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "uint64",
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    }
+  }
+}
