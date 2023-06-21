@@ -2,8 +2,9 @@
 
 This is a simple dApp that provides for the [Cronkitty experience] - where the [Vectis] account has installed the [Cronkitty] Plugin and plays a game of tic-tac-toe where all the transactions are coming from the account itself. 
 
-[Cronkitty experience]: https://testnet-cronkitty.vectis.space
-[Vectis]: https://github.com/nymlab/vectis
+[Cronkitty]:  https://github.com/nymlab/vectis-plugins
+[cronkitty experience]: https://testnet-cronkitty.vectis.space
+[vectis]: https://github.com/nymlab/vectis
 
 ## Deployments
 
