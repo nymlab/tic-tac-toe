@@ -1,5 +1,10 @@
 # tic-tac-toe
 
+This is a simple dApp that provides for the [Cronkitty experience] - where the [Vectis] account has installed the [Cronkitty] Plugin and plays a game of tic-tac-toe where all the transactions are coming from the account itself. 
+
+[Cronkitty experience]: https://testnet-cronkitty.vectis.space
+[Vectis]: https://github.com/nymlab/vectis
+
 ## Deployments
 
 - uni-6: code_id = 2337, addr = juno1tsqeaanlxv5wlu0zdcje2lute0m8g0nszz3gwatr0tyauujskrws55h09u
